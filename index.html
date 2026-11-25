@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lernpfad Potenzfunktionen</title>
+
+<style>
+/* VOICE: freundlich-klar, wie eine gute Lehrkraft am Rand des Hefts
+   IDEA: das karierte Matheheft mit Füller (Königsblau) und Korrekturstift
+   PICTURE: Graphen auf Karopapier, groß und sauber
+   COLOUR and TYPE: Königsblau dominant, Karo-Blassblau, Korrektur-Rot + Haken-Grün; Lexend + Atkinson Hyperlegible
+   LAYOUT: eine ruhige Spalte fürs Handy, Stationen nacheinander, Fortschritt oben */
+:root{color-scheme:light dark;
+--bg:light-dark(#f4f6fb,#0e1322);--paper:light-dark(#ffffff,#161d31);--ink:light-dark(#14203d,#e6ebf7);--mute:light-dark(#56627e,#9ba7c4);
+--blue:light-dark(#1d3fb3,#7d9bff);--blue2:light-dark(#e7edfc,#1f2a4a);--grid:light-dark(#dfe6f6,#243052);
+--ok:light-dark(#1f8a3b,#5fd17f);--okbg:light-dark(#e7f6ea,#15301f);--err:light-dark(#c92a50,#ff7d9a);--errbg:light-dark(#fdebef,#3a1824);
+--warn:light-dark(#a35b00,#ffc266);--warnbg:light-dark(#fff4e0,#33260f);--line:light-dark(#d6ddec,#2a3557)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,7vw,40px)}h2{font-size:24px}h3{font-size:18px}
+sup{font-size:.72em;line-height:0}
+.top{position:sticky;top:0;z-index:5;background:var(--blue);color:#fff;padding:10px 16px 12px}
+.top .row{display:flex;align-items:center;gap:10px;max-width:640px;margin:0 auto}
+.top .t{font:700 15px system-ui,sans-serif;flex:1}
+.top button{background:rgba(255,255,255,.16);color:#fff;border:0;border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;min-height:38px}
+.dots{display:flex;gap:6px;max-width:640px;margin:10px auto 0}
+.dots span{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.25)}
+.dots span.d{background:#fff}.dots span.c{background:#ffd43b}
+main{max-width:640px;margin:0 auto;padding:18px 14px 90px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}
+.hero{background:var(--paper) linear-gradient(var(--grid) 1px,transparent 1px) 0 0/22px 22px,var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
+.kicker{color:var(--blue);font-weight:700;font-size:14px;margin-bottom:6px}
+.need{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.need span{background:var(--blue2);color:var(--blue);border-radius:20px;padding:4px 12px;font-size:14px;font-weight:700}
+.task{border-left:4px solid var(--blue)}
+.task.done{border-left-color:var(--ok)}
+.th{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.badge{flex:none;background:var(--blue);color:#fff;border-radius:9px;font:700 14px system-ui,sans-serif;padding:4px 9px}
+.task.done .badge{background:var(--ok)}
+.th h3{flex:1;padding-top:2px}
+.item{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:10px 0;border-top:1px dashed var(--line)}
+.item:first-of-type{border-top:0}
+.lbl{flex:1 1 180px}
+.inp{display:flex;gap:6px;align-items:center}
+input[type=text],textarea{font:inherit;font-size:17px;color:var(--ink);background:var(--paper);border:2px solid var(--line);border-radius:10px;padding:8px 10px;width:110px;min-height:44px}
+textarea{width:100%;min-height:110px;resize:vertical}
+input:focus,textarea:focus,button:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 45%,transparent);outline-offset:1px}
+input.ok{border-color:var(--ok);background:var(--okbg)}input.no{border-color:var(--err);background:var(--errbg)}
+.pm{min-width:44px;min-height:44px;border-radius:10px;border:2px solid var(--line);background:var(--blue2);color:var(--blue);font:700 18px system-ui,sans-serif}
+.chips{display:flex;flex-wrap:wrap;gap:8px;flex:1 1 100%}
+.chip{font:inherit;font-size:16px;color:var(--ink);background:var(--paper);border:2px solid var(--line);border-radius:12px;padding:9px 14px;min-height:44px;text-align:left}
+.chip.sel{border-color:var(--blue);background:var(--blue2);font-weight:700}
+.chip.sel.ok{border-color:var(--ok);background:var(--okbg)}.chip.sel.no{border-color:var(--err);background:var(--errbg)}
+.mark{font-weight:700;font-size:18px;width:22px;text-align:center}
+.mark.ok{color:var(--ok)}.mark.no{color:var(--err)}
+.msg{flex:1 1 100%;font-size:15px;color:var(--err)}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{font:700 16px system-ui,sans-serif;border:0;border-radius:12px;padding:11px 18px;min-height:46px;background:var(--blue);color:#fff;cursor:pointer}
+.btn.g{background:var(--blue2);color:var(--blue)}
+.btn.w{background:var(--warnbg);color:var(--warn)}
+.btn.big{width:100%;padding:15px;font-size:17px}
+.btn:disabled{opacity:.45}
+.fb{margin-top:12px;border-radius:12px;padding:12px 14px;font-size:16px}
+.fb:empty{display:none}
+.fb.ok{background:var(--okbg);color:var(--ok);font-weight:700}
+.fb.no{background:var(--errbg)}
+.box{border-radius:12px;padding:12px 14px;margin-top:10px;font-size:16px}
+.box.hint{background:var(--warnbg)}.box.sol{background:var(--blue2)}
+.box b.h{display:block;font-family:system-ui,sans-serif;margin-bottom:4px}
+.fig{margin:12px 0;background:var(--paper);border-radius:12px;border:1px solid var(--line);overflow:hidden}
+.fig svg{display:block;width:100%;height:auto}
+.cap{font-size:14px;color:var(--mute);padding:6px 10px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;padding:6px 10px 10px;font-size:14px}
+.legend i{display:inline-block;width:18px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.merk{border:2px solid var(--blue);background:var(--paper)}
+.merk h2{color:var(--blue)}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:10px 0}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{background:var(--blue2);font-family:system-ui,sans-serif;font-size:14px}
+.new{background:var(--warnbg);border-radius:12px;padding:12px 14px;margin-top:12px}
+.new b{color:var(--warn)}
+.steps{margin:8px 0 0;padding-left:20px}.steps li{margin:6px 0}
+.tr{background:var(--blue2);border-radius:12px;padding:12px 14px;margin:10px 0}
+.lock{opacity:.6}
+.code{font:700 22px/1.3 system-ui,monospace;letter-spacing:.06em;background:var(--blue2);color:var(--blue);border-radius:12px;padding:14px;text-align:center;word-break:break-all;user-select:all}
+.code.small{font-size:15px;letter-spacing:0}
+.stat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.stat div{background:var(--blue2);border-radius:12px;padding:12px}
+.stat b{display:block;font:700 26px system-ui,sans-serif;color:var(--blue)}
+.stat span{font-size:14px;color:var(--mute)}
+.bar{height:12px;border-radius:6px;background:var(--grid);overflow:hidden}.bar i{display:block;height:100%;background:var(--blue)}
+.scroll{overflow-x:auto}
+.mute{color:var(--mute);font-size:14px}
+.foot{text-align:center;margin-top:30px}
+.foot a{color:var(--mute);font-size:14px}
+.sel3{display:grid;gap:10px;margin-top:12px}
+.sel3 .chip{font-size:17px;padding:14px}
+.heat td.n{text-align:right;white-space:nowrap}
+.pill{display:inline-block;border-radius:8px;padding:2px 8px;font-size:13px;font-weight:700}
+.p1{background:var(--okbg);color:var(--ok)}.p2{background:var(--warnbg);color:var(--warn)}.p3{background:var(--errbg);color:var(--err)}
+@media(prefers-reduced-motion:no-preference){.card{animation:in .35s ease-out}@keyframes in{from{opacity:0;transform:translateY(8px)}}}
+@media(max-width:600px){table{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="top" id="top"></div>
+<main id="main"></main>
+<script>
+{
+/* ---------- Helfer ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const X=(b,e)=>`${b}<sup>${e}</sup>`;
+const fx=(e)=>`f(x) = ${X('x',e)}`;
+const ALPH='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const chk=s=>{let t=0;for(let i=0;i<s.length;i++)t+=(ALPH.indexOf(s[i])+1)*(i+3);return ALPH[t%ALPH.length]};
+const validCode=c=>/^[A-Z2-9]{5}$/.test(c)&&[...c].every(ch=>ALPH.includes(ch))&&chk(c.slice(0,4))===c[4];
+const newCode=()=>{let s='';for(let i=0;i<4;i++)s+=ALPH[Math.floor(Math.random()*ALPH.length)];return s+chk(s)};
+function parseNum(s){if(s==null)return NaN;s=String(s).trim().replace(/\s/g,'').replace(/−/g,'-').replace(/,/g,'.');if(!s)return NaN;
+ if(/^[+-]?\d*\.?\d+\/[+-]?\d*\.?\d+$/.test(s)){const [a,b]=s.split('/');return parseFloat(a)/parseFloat(b)}
+ if(!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s))return NaN;return parseFloat(s)}
+const near=(v,a,tol)=>Math.abs(v-a)<=(tol??Math.max(1e-9,Math.abs(a)*0.001));
+
+/* ---------- Graphen ---------- */
+const COLS=['#1d3fb3','#e8590c','#2b8a3e','#c2255c'];
+function plot(o){
+ const W=360,H=o.h||300,[x0,x1]=o.xr||[-4,4],[y0,y1]=o.yr||[-5,5];
+ const sx=x=>(x-x0)/(x1-x0)*W,sy=y=>H-(y-y0)/(y1-y0)*H;
+ let g='';
+ for(let x=Math.ceil(x0);x<=x1;x++)g+=`<line x1="${sx(x)}" x2="${sx(x)}" y1="0" y2="${H}" stroke="var(--grid)"/>`;
+ for(let y=Math.ceil(y0);y<=y1;y++)g+=`<line y1="${sy(y)}" y2="${sy(y)}" x1="0" x2="${W}" stroke="var(--grid)"/>`;
+ g+=`<line x1="0" x2="${W}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--ink)" stroke-width="1.4"/><line y1="0" y2="${H}" x1="${sx(0)}" x2="${sx(0)}" stroke="var(--ink)" stroke-width="1.4"/>`;
+ for(let x=Math.ceil(x0);x<=x1;x++)if(x&&x%(o.step||1)===0)g+=`<text x="${sx(x)}" y="${sy(0)+14}" font-size="11" text-anchor="middle" fill="var(--mute)">${x}</text>`;
+ for(let y=Math.ceil(y0);y<=y1;y++)if(y&&y%(o.step||1)===0)g+=`<text x="${sx(0)-5}" y="${sy(y)+4}" font-size="11" text-anchor="end" fill="var(--mute)">${y}</text>`;
+ g+=`<text x="${W-6}" y="${sy(0)-6}" font-size="13" text-anchor="end" fill="var(--ink)" font-style="italic">x</text><text x="${sx(0)+6}" y="13" font-size="13" fill="var(--ink)" font-style="italic">y</text>`;
+ if(o.asym){g+=`<line x1="0" x2="${W}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--err)" stroke-width="3" stroke-dasharray="7 6" opacity=".75"/><line y1="0" y2="${H}" x1="${sx(0)}" x2="${sx(0)}" stroke="var(--err)" stroke-width="3" stroke-dasharray="7 6" opacity=".75"/>`}
+ (o.fns||[]).forEach((fn,i)=>{const N=700;let d='',pen=false,prev=null;
+  for(let k=0;k<=N;k++){const x=x0+(x1-x0)*k/N;if(Math.abs(x)<1e-9){pen=false;continue}
+   if(prev!==null&&Math.sign(prev)!==Math.sign(x))pen=false;prev=x;
+   let y=fn.f(x);if(!isFinite(y)||Math.abs(y)>200){pen=false;continue}
+   y=Math.max(y0-3,Math.min(y1+3,y));d+=(pen?'L':'M')+sx(x).toFixed(1)+' '+sy(y).toFixed(1);pen=true}
+  g+=`<path d="${d}" fill="none" stroke="${fn.c||COLS[i]}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`});
+ (o.pts||[]).forEach(p=>{g+=`<circle cx="${sx(p[0])}" cy="${sy(p[1])}" r="4.5" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/><text x="${sx(p[0])+(p[0]<0?-8:8)}" y="${sy(p[1])-8}" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="${p[0]<0?'end':'start'}">${p[2]}</text>`});
+ (o.notes||[]).forEach(n=>{g+=`<text x="${sx(n[0])}" y="${sy(n[1])}" font-size="12" font-weight="700" fill="var(--err)" stroke="var(--paper)" stroke-width="4" paint-order="stroke" text-anchor="${n[3]||'start'}">${n[2]}</text>`});
+ const leg=(o.fns||[]).filter(f=>f.n).map((f,i)=>`<span><i style="background:${f.c||COLS[i]}"></i>${f.n}</span>`).join('');
+ return `<div class="fig"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.alt||'Funktionsgraph')}"><defs><clipPath id="cp${H}"><rect width="${W}" height="${H}"/></clipPath></defs><g clip-path="url(#cp${H})">${g}</g></svg>${leg?`<div class="legend">${leg}</div>`:''}${o.cap?`<div class="cap">${o.cap}</div>`:''}</div>`;
+}
+const P=n=>x=>Math.pow(x,n);
+
+/* ---------- Inhalte ---------- */
+const N=(id,l,a,o={})=>({id,t:'num',l,a,...o});
+const S2=(id,l,a,o={})=>({id,t:'set',l,a,...o});
+const M=(id,l,opts,c,o={})=>({id,t:'mc',l,opts,c,...o});
+const JN=['ja','nein'];
+
+const STATIONS=[
+{id:'wdh',title:'Wiederholung',sub:'Potenzfunktionen mit positiven Exponenten',need:['Heft','Taschenrechner'],
+ intro:`Bevor es mit Neuem losgeht, frischst du auf, was du schon über f(x) = x<sup>n</sup> (n = 1, 2, 3, …) weißt. Rechne im Kopf oder im Heft – den Taschenrechner nur, wenn nötig.`,
+ tasks:[
+ {id:'w1',title:'Fehlende Koordinaten',intro:`Die Punkte liegen auf dem Graphen der angegebenen Funktion. Bestimme die fehlende Koordinate.`,
+  items:[N('w1a',`y = ${X('x',3)}: P(4 | ▢)`,64,{k:'x³: P(4|?)',w:[[12,'Achtung: 4³ = 4·4·4, nicht 4·3.']]}),N('w1b',`y = ${X('x',3)}: P(▢ | 27)`,3,{k:'x³: P(?|27)',w:[[9,'Du hast durch 3 geteilt. Gesucht ist die Zahl, die hoch 3 genommen 27 ergibt.']]}),
+   N('w1c',`y = ${X('x',3)}: P(▢ | −27)`,-3,{k:'x³: P(?|−27)',w:[[3,'Fast! Bei ungeraden Exponenten bleibt das Vorzeichen erhalten: (−3)³ = −27.']]}),N('w1d',`y = ${X('x',3)}: P(▢ | 0,125)`,0.5,{k:'x³: P(?|0,125)'}),
+   N('w1e',`y = ${X('x',4)}: P(−2 | ▢)`,16,{k:'x⁴: P(−2|?)',w:[[-16,'Gerader Exponent: (−2)⁴ = (−2)·(−2)·(−2)·(−2) ist positiv.']]}),N('w1f',`y = ${X('x',4)}: P(0,2 | ▢)`,0.0016,{k:'x⁴: P(0,2|?)',w:[[0.016,'Zähle die Nachkommastellen: 0,2⁴ hat 4 Nachkommastellen.'],[0.8,'0,2⁴ bedeutet 0,2·0,2·0,2·0,2, nicht 0,2·4.']]}),
+   S2('w1g',`y = ${X('x',4)}: P(▢ | 81) – es gibt <b>zwei</b> Lösungen`,[3,-3],{k:'x⁴: P(?|81) ±'})],
+  hint:`Setze den bekannten Wert ein. Ist y gegeben, fragst du: „Welche Zahl hoch n ergibt y?“ Bei <b>geraden</b> Exponenten gibt es dafür zwei Zahlen (positiv und negativ).`,
+  sol:`x³: 4³ = 64 · 3³ = 27 → x = 3 · (−3)³ = −27 → x = −3 · 0,5³ = 0,125 → x = 0,5<br>x⁴: (−2)⁴ = 16 · 0,2⁴ = 0,0016 · 3⁴ = 81 und (−3)⁴ = 81 → x = 3 oder x = −3`},
+ {id:'w2',title:'Punkt auf dem Graphen?',intro:`Entscheide ohne Taschenrechner, ob der Punkt auf dem Graphen liegt.`,
+  items:[M('w2a',`${fx(3)}: P(2 | 8)`,JN,0,{k:'x³: P(2|8)'}),M('w2b',`${fx(3)}: P(−2 | 4)`,JN,1,{k:'x³: P(−2|4)'}),M('w2c',`${fx(3)}: P(−2 | −8)`,JN,0,{k:'x³: P(−2|−8)'}),
+   M('w2d',`${fx(3)}: P(1 | −1)`,JN,1,{k:'x³: P(1|−1)'}),M('w2e',`${fx(4)}: P(−2 | 16)`,JN,0,{k:'x⁴: P(−2|16)'}),M('w2f',`${fx(4)}: P(−1 | −1)`,JN,1,{k:'x⁴: P(−1|−1)'})],
+  hint:`Setze die x-Koordinate in f ein und vergleiche das Ergebnis mit der y-Koordinate. Beispiel: f(2) = 2³ = 8 → P(2 | 8) liegt drauf.`,
+  sol:`f(2)=8 ✓ · f(−2)=−8 ≠ 4 ✗ · f(−2)=−8 ✓ · f(1)=1 ≠ −1 ✗ · bei x⁴: f(−2)=16 ✓ · f(−1)=1 ≠ −1 ✗<br>Merke: Graphen mit geradem Exponenten verlaufen nie unterhalb der x-Achse.`},
+ {id:'w3',title:'Funktionswerte berechnen',intro:`Berechne die Funktionswerte. Du darfst den Taschenrechner nutzen – achte auf Klammern bei negativen Zahlen!`,
+  items:[N('w3a',`${fx(5)}: f(−2) =`,-32,{k:'x⁵: f(−2)',w:[[32,'Ungerader Exponent – das Minus bleibt: (−2)⁵ = −32. Tipp TR: (−2)^5 mit Klammer!']]}),N('w3b',`${fx(4)}: f(−1,5) =`,5.0625,{k:'x⁴: f(−1,5)',w:[[-5.0625,'Hast du die Klammer im TR vergessen? −1,5^4 rechnet −(1,5⁴). Richtig: (−1,5)^4.']]}),
+   N('w3c',`${fx(4)}: f(√2) =`,4,{k:'x⁴: f(√2)',tol:0.01}),N('w3d',`${fx(6)}: f(0,5) =`,0.015625,{k:'x⁶: f(0,5)'})],
+  hint:`Tippe negative Zahlen im Taschenrechner immer in Klammern ein: (−2)^5. Für √2 hilft auch: (√2)⁴ = (√2)²·(√2)² = 2·2.`,
+  sol:`(−2)⁵ = −32 · (−1,5)⁴ = 5,0625 · (√2)⁴ = 4 · 0,5⁶ = 0,015625`},
+ {id:'w4',title:'Gerade oder ungerade?',intro:`Gilt die Eigenschaft für f(x) = x<sup>n</sup> mit <b>geradem</b> oder <b>ungeradem</b> Exponenten n (n > 0)?`,
+  items:[M('w4a','Der Graph ist symmetrisch zur y-Achse.',['gerade','ungerade'],0,{k:'Symm. y-Achse'}),M('w4b','Der Graph ist punktsymmetrisch zum Ursprung.',['gerade','ungerade'],1,{k:'Punktsymm. Ursprung'}),
+   M('w4c','Der Graph verläuft durch (−1 | −1).',['gerade','ungerade'],1,{k:'Punkt (−1|−1)'}),M('w4d','Wertebereich: alle y ≥ 0',['gerade','ungerade'],0,{k:'W: y ≥ 0'}),M('w4e','Der Graph verläuft durch (−1 | 1).',['gerade','ungerade'],0,{k:'Punkt (−1|1)'})],
+  hint:`Denk an die Normalparabel y = x² (gerade) und an y = x³ (ungerade). Skizziere beide kurz im Heft und prüfe jede Aussage.`,
+  sol:`gerade (wie x²): symmetrisch zur y-Achse, W: y ≥ 0, Punkt (−1 | 1)<br>ungerade (wie x³): punktsymmetrisch zum Ursprung, Punkt (−1 | −1)`},
+ {id:'w5',title:'Jana vergleicht x⁴ und x⁶',intro:`Jana hat die Graphen von f(x) = x⁴ und g(x) = x⁶ gezeichnet. Beantworte, ohne zu zeichnen – setze z. B. x = 0,5 und x = 2 ein.`,
+  items:[M('w5a',`Für −1 < x < 1 liegt der Graph von x⁶ …`,['oberhalb von x⁴','unterhalb von x⁴'],1,{k:'x⁶ vs x⁴ innen'}),M('w5b',`Für x > 1 verläuft der Graph von x⁶ …`,['steiler als x⁴','flacher als x⁴'],0,{k:'x⁶ vs x⁴ außen'}),M('w5c','Gemeinsame Punkte beider Graphen:',['(0|0), (1|1), (−1|1)','nur (0|0)','(1|1) und (−1|−1)'],0,{k:'gemeins. Punkte'})],
+  hint:`0,5⁴ = 0,0625 und 0,5⁶ ≈ 0,0156. Welcher Wert ist kleiner? Und 2⁴ = 16, 2⁶ = 64.`,
+  sol:`Zwischen −1 und 1 gilt: je höher der Exponent, desto kleiner der Wert → x⁶ liegt unterhalb (flacher). Außerhalb ist es umgekehrt → x⁶ steiler. Gemeinsam: (0|0), (1|1), (−1|1).`}
+ ]},
+{id:'erarb',title:'Erarbeitung',sub:'Was passiert bei negativen Exponenten?',need:['Taschenrechner/GTR','Heft'],
+ intro:`Jetzt untersuchst du Potenzfunktionen wie f(x) = x<sup>−2</sup>. Du arbeitest mit deinem Taschenrechner und notierst Beobachtungen im Heft.`,
+ pre:`<div class="tr"><b>Kurz erinnert:</b> Eine negative Hochzahl bedeutet „Kehrwert“:<br><span style="font-size:19px">x<sup>−n</sup> = <sup>1</sup>⁄<sub>x<sup>n</sup></sub></span> &nbsp; z. B. 2<sup>−3</sup> = <sup>1</sup>⁄<sub>2³</sub> = <sup>1</sup>⁄<sub>8</sub></div>`,
+ tasks:[
+ {id:'e0',title:'Aufwärmen: Kehrwerte',intro:`Berechne – zuerst im Kopf, dann mit dem TR kontrollieren.`,
+  items:[N('e0a',`2<sup>−3</sup> =`,0.125,{k:'2^−3',w:[[-8,'Negative Hochzahl heißt nicht „negatives Ergebnis“, sondern Kehrwert: 1/2³.'],[-6,'Nicht 2·(−3). Es ist 1/2³.']]}),N('e0b',`(−2)<sup>−2</sup> =`,0.25,{k:'(−2)^−2',w:[[-0.25,'(−2)² = 4 ist positiv, also 1/4 = 0,25.'],[4,'Kehrwert! (−2)^−2 = 1/(−2)² = 1/4.']]}),N('e0c',`5<sup>−1</sup> =`,0.2,{k:'5^−1',w:[[-5,'5^−1 = 1/5.']]})],
+  hint:`Schreibe zuerst als Bruch: a<sup>−n</sup> = 1 / a<sup>n</sup>. Dann ausrechnen. Du darfst als Dezimalzahl oder Bruch (z. B. 1/8) antworten.`,
+  sol:`2<sup>−3</sup> = 1/8 = 0,125 · (−2)<sup>−2</sup> = 1/4 = 0,25 · 5<sup>−1</sup> = 1/5 = 0,2`},
+ {id:'e1',title:'Auftrag am Taschenrechner',intro:`<ol class="steps">
+   <li>Gib diese vier Funktionen in deinen (G)TR ein – <b>mit Klammern</b> um die Hochzahl, z. B. <code>x^(−2)</code>:<br>
+   <b>y₁ = x<sup>−1</sup>, y₂ = x<sup>−2</sup>, y₃ = x<sup>−3</sup>, y₄ = x<sup>−4</sup></b></li>
+   <li>Fenster einstellen: x von −4 bis 4, y von −5 bis 5.</li>
+   <li>Lass dir die <b>Wertetabelle</b> anzeigen (Start −3, Schrittweite 0,5). Schau dir besonders x = 0 an.</li>
+   <li>Probiere auch sehr große x (100, 1000) und sehr kleine x nahe 0 (0,1; 0,01).</li>
+   <li>Skizziere im Heft: x<sup>−2</sup> und x<sup>−4</sup> in ein Koordinatensystem, x<sup>−1</sup> und x<sup>−3</sup> in ein zweites.</li>
+   <li>Notiere im Heft <b>Gemeinsamkeiten</b> und <b>Unterschiede</b>. Tipp: Vergleiche mit x² und x³ aus der Wiederholung.</li></ol>`,
+  items:[{id:'e1n',t:'notes',l:'Deine Stichpunkte (optional hier, Pflicht im Heft):'},M('e1a','Ich habe alle vier Graphen im TR angeschaut und im Heft skizziert.',['erledigt ✓'],0,{k:'TR-Auftrag erledigt',noStat:1})],
+  hint:`Klammern! Ohne Klammern rechnet der TR x^−2 manchmal falsch. Bei Casio: x ^ ( (−) 2 ). Bei TI: x ^ ( (−) 2 ). Findest du die Wertetabelle nicht: Menü „Table“ bzw. „TABLE“.`,sol:``},
+ {id:'e2',title:'Was hast du beobachtet?',intro:`Beantworte mithilfe deiner TR-Bilder und deiner Notizen.`,
+  items:[M('e2a','Was zeigt der TR in der Wertetabelle bei x = 0?',['0','1','Fehler / keinen Wert'],2,{k:'Wert bei x=0'}),
+   M('e2b','Warum?',['Weil 0 hoch etwas immer 0 ist','Weil man durch 0 nicht teilen kann: x⁻² = 1/0²','Weil der TR zu ungenau ist'],1,{k:'Begründung x=0'}),
+   M('e2c','Was passiert mit den y-Werten, wenn x sehr groß wird (100, 1000, …)?',['Sie werden irgendwann 0','Sie kommen der 0 immer näher, werden aber nie 0','Sie werden immer größer'],1,{k:'x → groß'}),
+   M('e2d','Was passiert mit den y-Werten in der Nähe von x = 0 (0,1; 0,01)?',['Sie werden betragsmäßig sehr groß','Sie werden 0','Sie werden 1'],0,{k:'x → 0'}),
+   M('e2e','Welcher Punkt liegt auf <b>allen vier</b> Graphen?',['(0 | 0)','(1 | 1)','(1 | 0)'],1,{k:'gemeins. Punkt'}),
+   M('e2f','Die Graphen von x⁻² und x⁻⁴ sind …',['symmetrisch zur y-Achse','punktsymmetrisch zum Ursprung','nicht symmetrisch'],0,{k:'Symm. gerade'}),
+   M('e2g','Die Graphen von x⁻¹ und x⁻³ sind …',['symmetrisch zur y-Achse','punktsymmetrisch zum Ursprung','nicht symmetrisch'],1,{k:'Symm. ungerade'}),
+   M('e2h','Welche y-Werte kommen bei x⁻² und x⁻⁴ vor?',['nur positive','alle außer 0','alle'],0,{k:'W gerade'}),
+   M('e2i','Welche y-Werte kommen bei x⁻¹ und x⁻³ vor?',['nur positive','alle außer 0','alle'],1,{k:'W ungerade'}),
+   M('e2j','Berühren oder schneiden die Graphen die Koordinatenachsen?',['Ja, im Ursprung','Nein, sie nähern sich ihnen nur immer mehr an','Nur die x-Achse'],1,{k:'Achsen berührt?'})],
+  hint:`Schau in die Wertetabelle: Was steht bei x = 0? Was bei x = 10 oder x = 100? Prüfe Symmetrie so: Haben x = 2 und x = −2 denselben y-Wert (→ y-Achse) oder den „entgegengesetzten“ (→ Ursprung)?`,
+  sol:`x = 0 ist nicht erlaubt (Division durch 0). Für große x gehen die Werte gegen 0, erreichen sie aber nie. Nahe 0 werden sie riesig. Alle gehen durch (1|1). Gerade Hochzahl: symmetrisch zur y-Achse, nur positive y. Ungerade: punktsymmetrisch zum Ursprung, alle y außer 0. Die Achsen werden nie erreicht.`}
+ ],
+ after:()=>`<div class="card"><h3>Kontrollbild</h3><p class="mute">Vergleiche mit deinen TR-Bildern und Skizzen. Stimmen sie überein?</p>`+
+  plot({fns:[{f:P(-2),n:'y = x⁻²'},{f:P(-4),n:'y = x⁻⁴',c:COLS[1]}],pts:[[1,1,'(1|1)'],[-1,1,'(−1|1)']],alt:'Graphen von x hoch minus 2 und minus 4',cap:'Gerade negative Hochzahlen'})+
+  plot({fns:[{f:P(-1),n:'y = x⁻¹'},{f:P(-3),n:'y = x⁻³',c:COLS[1]}],pts:[[1,1,'(1|1)'],[-1,-1,'(−1|−1)']],alt:'Graphen von x hoch minus 1 und minus 3',cap:'Ungerade negative Hochzahlen'})+`</div>`},
+{id:'merk',title:'Merkkasten',sub:'Übernimm ihn vollständig ins Heft',need:['Heft','Lineal'],
+ intro:`Schreibe den Merkkasten <b>vollständig</b> mit Skizze in dein Heft. Ein Screenshot ersetzt das Abschreiben nicht – beim Schreiben merkst du es dir.`,
+ merk:true,
+ tasks:[{id:'m1',title:'Kurzcheck zu den neuen Begriffen',intro:`Erst nach dem Abschreiben beantworten.`,
+  items:[M('m1a','Eine Asymptote ist …',['eine Gerade, der sich der Graph immer weiter annähert, ohne sie zu erreichen','eine Stelle, an der der Graph die x-Achse schneidet','der höchste Punkt des Graphen'],0,{k:'Def. Asymptote'}),
+   M('m1b',`Bei ${fx('−2')} ist die waagerechte Asymptote …`,['die x-Achse (y = 0)','die y-Achse (x = 0)','die Gerade y = 1'],0,{k:'waagerechte Asymptote'}),
+   M('m1c','Eine Polstelle ist …',['die Stelle, an der eine senkrechte Asymptote die x-Achse schneidet','ein Punkt, an dem der Graph am höchsten ist','eine Nullstelle'],0,{k:'Def. Polstelle'}),
+   N('m1d',`Polstelle von ${fx('−3')}: x<sub>p</sub> =`,0,{k:'Polstelle x⁻³'})],
+  hint:`Lies im Merkkasten unter „Neu“ nach.`,sol:`Asymptote: Gerade, der sich der Graph beliebig nähert, ohne sie zu erreichen. Hier: x-Achse (y = 0) waagerecht, y-Achse (x = 0) senkrecht. Polstelle: x<sub>p</sub> = 0.`}]},
+{id:'basis',title:'Übungen',sub:'Basisaufgaben',need:['Heft','Taschenrechner'],
+ intro:`Jetzt wendest du dein Wissen an. Rechnungen gehören ins Heft, die Ergebnisse trägst du hier ein. Runde, wo nötig, auf <b>zwei Nachkommastellen</b>.`,
+ tasks:[
+ {id:'b1',title:'Funktionswerte',intro:`Berechne die Funktionswerte (gerundet auf 2 Stellen).`,
+  items:[N('b1a',`${fx('−1')}: f(0,8) =`,1.25,{k:'x⁻¹: f(0,8)',tol:0.006,w:[[-0.8,'Kehrwert, nicht Gegenzahl: 0,8⁻¹ = 1/0,8.'],[0.8,'Das ist x selbst. Gesucht: 1/0,8.']]}),N('b1b',`${fx('−1')}: f(−0,8) =`,-1.25,{k:'x⁻¹: f(−0,8)',tol:0.006,w:[[1.25,'Ungerade Hochzahl – das Vorzeichen bleibt erhalten.']]}),
+   N('b1c',`${fx('−1')}: f(1,3) ≈`,1/1.3,{k:'x⁻¹: f(1,3)',tol:0.006}),N('b1d',`${fx('−2')}: f(0,8) ≈`,1/0.64,{k:'x⁻²: f(0,8)',tol:0.006,w:[[0.64,'Du hast nur 0,8² berechnet. Jetzt noch den Kehrwert: 1/0,64.']]}),
+   N('b1e',`${fx('−2')}: f(−1,3) ≈`,1/1.69,{k:'x⁻²: f(−1,3)',tol:0.006,w:[[-1/1.69,'Gerade Hochzahl → Ergebnis immer positiv.']]})],
+  hint:`Schreibe als Bruch: f(0,8) = 1/0,8. Im TR: 0,8^(−1) oder 1÷0,8. Bei negativen x Klammern setzen!`,
+  sol:`1/0,8 = 1,25 · 1/(−0,8) = −1,25 · 1/1,3 ≈ 0,77 · 1/0,8² = 1/0,64 ≈ 1,56 · 1/(−1,3)² = 1/1,69 ≈ 0,59`},
+ {id:'b2',title:'Stellen gesucht',intro:`An welchen Stellen x nimmt die Funktion den angegebenen Wert an?`,
+  items:[N('b2a',`${fx('−1')} = 2 → x =`,0.5,{k:'x⁻¹ = 2',w:[[-2,'Gesucht ist x mit 1/x = 2.'],[2,'f(2) = 0,5, nicht 2. Gesucht: 1/x = 2.']]}),N('b2b',`${fx('−1')} = ¼ → x =`,4,{k:'x⁻¹ = 1/4',w:[[0.25,'1/0,25 = 4, also f(0,25) = 4. Gesucht ist das x mit 1/x = 0,25.']]}),
+   S2('b2c',`${fx('−2')} = ¼ → zwei Lösungen`,[2,-2],{k:'x⁻² = 1/4 ±'}),S2('b2d',`${fx('−2')} = 2 → zwei Lösungen (2 Stellen)`,[Math.SQRT1_2,-Math.SQRT1_2],{k:'x⁻² = 2 ±',tol:0.006})],
+  hint:`Stelle die Gleichung auf, z. B. 1/x² = ¼. Kehrwert auf beiden Seiten: x² = 4. Dann Wurzel ziehen – bei x² gibt es <b>zwei</b> Lösungen!`,
+  sol:`1/x = 2 → x = 0,5 · 1/x = ¼ → x = 4 · 1/x² = ¼ → x² = 4 → x = 2 oder x = −2 · 1/x² = 2 → x² = 0,5 → x ≈ 0,71 oder x ≈ −0,71`},
+ {id:'b3',title:'Fehlende Koordinaten',intro:`Die Punkte liegen auf dem Graphen. Bestimme die fehlende Koordinate.`,
+  items:[N('b3a',`f(x) = 1/x²: P(2 | ▢)`,0.25,{k:'1/x²: P(2|?)'}),S2('b3b',`f(x) = 1/x²: P(▢ | 1/16) – zwei Lösungen`,[4,-4],{k:'1/x²: P(?|1/16) ±'}),N('b3c',`f(x) = 1/x²: P(−½ | ▢)`,4,{k:'1/x²: P(−½|?)',w:[[-4,'Gerade Hochzahl → y ist positiv.']]}),
+   N('b3d',`f(x) = 1/x³: P(▢ | 64)`,0.25,{k:'1/x³: P(?|64)',w:[[4,'4³ = 64, also 1/4³ = 1/64. Gesucht ist x mit 1/x³ = 64 → x³ = 1/64.']]}),N('b3e',`f(x) = 1/x³: P(−⅓ | ▢)`,-27,{k:'1/x³: P(−⅓|?)',w:[[27,'Ungerade Hochzahl → Vorzeichen bleibt: (−⅓)³ = −1/27, Kehrwert −27.']]}),
+   N('b3f',`f(x) = 1/x³: P(▢ | −1/27)`,-3,{k:'1/x³: P(?|−1/27)',w:[[3,'Vorzeichen prüfen: 1/3³ = +1/27.']]})],
+  hint:`x gegeben → einsetzen. y gegeben → Gleichung 1/x² = y bzw. 1/x³ = y aufstellen, Kehrwert bilden, dann Wurzel ziehen.`,
+  sol:`1/2² = ¼ · 1/x² = 1/16 → x² = 16 → x = ±4 · 1/(−½)² = 1/¼ = 4 · 1/x³ = 64 → x³ = 1/64 → x = ¼ · 1/(−⅓)³ = 1/(−1/27) = −27 · 1/x³ = −1/27 → x³ = −27 → x = −3`},
+ {id:'b4',title:'Symmetrie nutzen',intro:`Fülle die Lücken <b>ohne Taschenrechner</b> – nutze die Symmetrie.<br><span class="mute">Gegeben: 2,5<sup>−1</sup> = 0,4 · 0,8<sup>−1</sup> = 1,25 · 0,25<sup>−2</sup> = 16 · 1,25<sup>−2</sup> = 0,64</span>`,
+  items:[N('b4a',`(−2,5)<sup>−1</sup> =`,-0.4,{k:'Symm. (−2,5)⁻¹',w:[[0.4,'x⁻¹ ist punktsymmetrisch zum Ursprung: f(−x) = −f(x).']]}),N('b4b',`(−0,8)<sup>−1</sup> =`,-1.25,{k:'Symm. (−0,8)⁻¹',w:[[1.25,'Punktsymmetrie: Vorzeichen wechselt.']]}),
+   N('b4c',`(−0,25)<sup>−2</sup> =`,16,{k:'Symm. (−0,25)⁻²',w:[[-16,'x⁻² ist achsensymmetrisch zur y-Achse: f(−x) = f(x).']]}),N('b4d',`(−1,25)<sup>−2</sup> =`,0.64,{k:'Symm. (−1,25)⁻²',w:[[-0.64,'Achsensymmetrie: gleicher Wert wie bei +1,25.']]})],
+  hint:`Ungerade Hochzahl → punktsymmetrisch → f(−x) = −f(x). Gerade Hochzahl → achsensymmetrisch → f(−x) = f(x).`,
+  sol:`x⁻¹ (ungerade): −0,4 und −1,25 · x⁻² (gerade): 16 und 0,64`},
+ {id:'b5',title:'Asymptoten und Polstelle',intro:`Betrachte ${fx('−3')}.`,
+  items:[M('b5a','Senkrechte Asymptote:',['x = 0 (y-Achse)','y = 0 (x-Achse)','x = 1'],0,{k:'senkr. Asymptote x⁻³'}),M('b5b','Waagerechte Asymptote:',['x = 0 (y-Achse)','y = 0 (x-Achse)','y = 1'],1,{k:'waager. Asymptote x⁻³'}),
+   M('b5c',`Hat ${fx('−4')} dieselben Asymptoten?`,['ja','nein'],0,{k:'Asymptoten x⁻⁴'}),M('b5d','Wo hat jede Potenzfunktion mit negativem Exponenten ihre Polstelle?',['bei x = 0','bei x = 1','sie hat keine'],0,{k:'Polstelle allg.'})],
+  hint:`Senkrechte Asymptote: dort, wo die Funktion nicht definiert ist und die Werte „explodieren“. Waagerechte: wohin gehen die y-Werte für sehr große x?`,
+  sol:`Senkrecht: x = 0 (y-Achse), waagerecht: y = 0 (x-Achse). Das gilt für alle xⁿ mit negativem n. Polstelle x<sub>p</sub> = 0.`},
+ {id:'b6',title:'Moritz hat gezeichnet',intro:`Moritz sollte den Graphen von ${fx('−3')} skizzieren. Hier ist seine Skizze. Welche Anmerkungen sind richtig?`,
+  fig:()=>plot({fns:[{f:x=>x>0?Math.pow(x,-3):Math.pow(-x,-3),c:'#7048e8'}],h:260,yr:[-4,4],alt:'Moritz Skizze',cap:'Moritz’ Skizze von y = x⁻³'}),
+  items:[M('b6a','„Der linke Ast ist falsch – er müsste unterhalb der x-Achse liegen.“',['richtig','falsch'],0,{k:'Moritz: linker Ast'}),
+   M('b6b','„Der Graph geht korrekt durch (1 | 1).“',['richtig','falsch'],0,{k:'Moritz: (1|1)'}),
+   M('b6c','„Moritz hätte den Graphen durch (0 | 0) zeichnen müssen.“',['richtig','falsch'],1,{k:'Moritz: Ursprung'}),
+   M('b6d','„Moritz hat x⁻² statt x⁻³ gezeichnet – die Skizze ist achsensymmetrisch statt punktsymmetrisch.“',['richtig','falsch'],0,{k:'Moritz: Symmetrie'})],
+  hint:`Prüfe einen Punkt links: f(−1) = (−1)⁻³ = 1/(−1) = ? Liegt der Punkt bei Moritz richtig?`,
+  sol:`f(−1) = −1, also muss der linke Ast im III. Quadranten (unten links) liegen. Moritz’ Skizze sieht aus wie x⁻² (achsensymmetrisch). (1|1) stimmt. Durch (0|0) geht der Graph nie – x = 0 ist Polstelle.`}
+ ]},
+{id:'selbst',title:'Selbsteinschätzung',sub:'Wie sicher bist du?',special:'selbst'},
+{id:'foerder',title:'Extra-Training',sub:'Schritt für Schritt sicherer werden',need:['Heft','Merkkasten'],
+ intro:`Gut, dass du ehrlich bist! Hier übst du die wichtigsten Grundlagen noch einmal. Nutze die Tipps und schau in deinen Merkkasten.`,
+ tasks:[
+ {id:'f1',title:'Negative Hochzahlen ohne TR',intro:`Schreibe zuerst als Bruch, dann rechne.`,
+  items:[N('f1a','2<sup>−2</sup> =',0.25,{k:'F: 2^−2',w:[[-4,'Nicht −4! 2⁻² = 1/2² = 1/4.']]}),N('f1b','10<sup>−1</sup> =',0.1,{k:'F: 10^−1'}),N('f1c','(−1)<sup>−3</sup> =',-1,{k:'F: (−1)^−3'}),N('f1d','4<sup>−2</sup> =',1/16,{k:'F: 4^−2',tol:0.0006})],
+  hint:`Muster: a<sup>−n</sup> = 1/a<sup>n</sup>. Beispiel: 3<sup>−2</sup> = 1/3² = 1/9.`,sol:`2⁻² = 1/4 = 0,25 · 10⁻¹ = 0,1 · (−1)⁻³ = 1/(−1) = −1 · 4⁻² = 1/16 = 0,0625`},
+ {id:'f2',title:'Gerade oder ungerade Hochzahl?',intro:`Ordne die Eigenschaft zu.`,
+  items:[M('f2a',`${fx('−5')} ist …`,['achsensymmetrisch zur y-Achse','punktsymmetrisch zum Ursprung'],1,{k:'F: Symm. x⁻⁵'}),M('f2b',`${fx('−6')} geht durch …`,['(−1 | 1)','(−1 | −1)'],0,{k:'F: Punkt x⁻⁶'}),
+   M('f2c',`${fx('−6')} hat nur …`,['positive y-Werte','negative y-Werte'],0,{k:'F: W x⁻⁶'})],
+  hint:`−5 ist ungerade → verhält sich wie x⁻¹. −6 ist gerade → verhält sich wie x⁻².`,sol:`x⁻⁵ wie x⁻¹: punktsymmetrisch. x⁻⁶ wie x⁻²: durch (−1|1), nur positive y-Werte.`},
+ {id:'f3',title:'Asymptoten erkennen',intro:``,fig:()=>plot({fns:[{f:P(-4),n:'y = x⁻⁴'}],asym:true,h:240,yr:[-1,6],alt:'Graph von x hoch minus 4 mit Asymptoten',notes:[[0.15,5.4,'senkrechte Asymptote'],[3.9,-0.45,'waagerechte Asymptote','end']]}),
+  items:[M('f3a','Für sehr große x nähert sich der Graph der Geraden …',['y = 0','x = 0','y = 1'],0,{k:'F: waager. Asymptote'}),N('f3b','Die Polstelle liegt bei x<sub>p</sub> =',0,{k:'F: Polstelle'})],
+  hint:`Die gestrichelten Linien sind die Asymptoten. Die Polstelle ist die Stelle auf der x-Achse, durch die die senkrechte Asymptote geht.`,sol:`Waagerechte Asymptote y = 0 (x-Achse), Polstelle x<sub>p</sub> = 0.`}
+ ]},
+{id:'chall',title:'Knobel-Check',sub:'Etwas schwerer – löse alle, um abzuschließen',need:['Heft','Taschenrechner'],challenge:true,
+ intro:`Jetzt wird’s kniffliger. Du musst jede Aufgabe richtig lösen, um weiterzukommen. Nach Fehlversuchen bekommst du Tipps – gib nicht auf!`,
+ tasks:[
+ {id:'c1',title:'Exponent gesucht',intro:`Der Graph von f(x) = x<sup>n</sup> (n negativ, ganzzahlig) verläuft durch P(−2 | −⅛). Bestimme n.`,
+  items:[N('c1a','n =',-3,{k:'C: n aus P(−2|−1/8)',w:[[3,'2³ = 8 stimmt – aber du brauchst den Kehrwert 1/8, also negative Hochzahl.'],[-2,'(−2)⁻² = +¼. Das Ergebnis muss aber negativ sein → ungerade Hochzahl.']]})],
+  hint:`Das y ist negativ, obwohl x negativ ist → was sagt das über die Hochzahl (gerade/ungerade)? Und ⅛ = 1/2³.`,
+  sol:`y negativ bei negativem x → ungerade Hochzahl. |y| = 1/8 = 1/2³ → n = −3. Probe: (−2)⁻³ = 1/(−8) = −⅛ ✓`},
+ {id:'c2',title:'Steckbrief',intro:`Eine Potenzfunktion f(x) = x<sup>n</sup> mit negativem ganzzahligem n hat nur positive Funktionswerte und es gilt f(0,5) = 16. Bestimme n.`,
+  items:[N('c2a','n =',-4,{k:'C: Steckbrief n',w:[[4,'0,5⁴ = 0,0625, nicht 16. Kehrwert nötig → negative Hochzahl.'],[-2,'0,5⁻² = 1/0,25 = 4. Probier eine andere gerade Zahl.']]})],
+  hint:`0,5 = ½. Dann ist (½)<sup>−n</sup> = 2<sup>n</sup>. Welche Zweierpotenz ist 16? Passt das zu „nur positive Werte“?`,
+  sol:`0,5ⁿ = 16 = 2⁴ = (½)⁻⁴ → n = −4. Gerade Hochzahl passt zu „nur positive Funktionswerte“ ✓`},
+ {id:'c3',title:'Wo ist x⁻² größer als 4?',intro:`Für welche x gilt x<sup>−2</sup> > 4? Tipp: Skizze oder TR-Graph mit y = 4 hilft.`,
+  items:[M('c3a','Lösungsmenge:',['x > 0,5','−0,5 < x < 0,5 und x ≠ 0','x < −0,5 oder x > 0,5','−2 < x < 2'],1,{k:'C: x⁻² > 4'})],
+  hint:`Wo gilt x⁻² = 4 genau? 1/x² = 4 → x² = ¼ → x = ±0,5. Liegt der Graph <b>zwischen</b> diesen Stellen oberhalb oder unterhalb von y = 4? Und was ist mit x = 0?`,
+  sol:`Gleichheit bei x = ±0,5. Je näher x an 0, desto größer x⁻² → zwischen −0,5 und 0,5 liegt der Graph über y = 4. x = 0 ist ausgeschlossen (Polstelle).`},
+ ]},
+{id:'ende',title:'Geschafft!',sub:'Abschluss',special:'ende'}
+];
+const MERK=`<div class="card merk"><div class="kicker">Merkkasten</div><h2>Potenzfunktionen mit negativen Exponenten</h2>
+<p><b>f(x) = x<sup>n</sup></b> mit n = −1, −2, −3, … &nbsp;z. B. x<sup>−2</sup> = <sup>1</sup>⁄<sub>x²</sub><br>Definitionsbereich: <b>D = ℝ \\ {0}</b> &nbsp;(x = 0 ist verboten)</p>
+<table><tr><th></th><th>n gerade<br>(x⁻², x⁻⁴, …)</th><th>n ungerade<br>(x⁻¹, x⁻³, …)</th></tr>
+<tr><td>Wertebereich</td><td>y > 0</td><td>y ≠ 0</td></tr>
+<tr><td>Symmetrie</td><td>zur y-Achse</td><td>zum Ursprung</td></tr>
+<tr><td>gemeinsame Punkte</td><td>(1|1), (−1|1)</td><td>(1|1), (−1|−1)</td></tr>
+<tr><td>Monotonie</td><td>x < 0: steigend<br>x > 0: fallend</td><td>x < 0: fallend<br>x > 0: fallend</td></tr></table>
+<p class="mute">Der Graph von y = x⁻¹ heißt <b>Hyperbel</b>.</p>
+<div class="new"><b>NEU: Asymptote</b><br>Eine Gerade, der sich ein Graph immer weiter annähert, ohne sie zu erreichen.<br>Hier: <b>waagerechte Asymptote y = 0</b> (x-Achse), <b>senkrechte Asymptote x = 0</b> (y-Achse).</div>
+<div class="new"><b>NEU: Polstelle x<sub>p</sub></b><br>Die Stelle, an der eine senkrechte Asymptote die x-Achse schneidet. Dort ist f nicht definiert, die Werte werden betragsmäßig beliebig groß.<br>Hier: <b>x<sub>p</sub> = 0</b>.</div>
+${plot({fns:[{f:P(-1),n:'y = x⁻¹ (Hyperbel)'},{f:P(-2),n:'y = x⁻²',c:COLS[1]}],asym:true,h:300,alt:'Skizze mit Asymptoten',notes:[[0.15,4.5,'senkrechte Asymptote x = 0'],[3.9,-0.7,'waagerechte Asymptote y = 0','end'],[0.15,-4.6,'Polstelle xₚ = 0']]})}
+</div>`;
+
+/* Alle Items in fester Reihenfolge (für Codes) */
+const ITEMS=[];STATIONS.forEach(st=>(st.tasks||[]).forEach(t=>t.items.forEach(it=>{it.st=st.id;it.task=t.id;if(it.t!=='notes'&&!it.noStat)ITEMS.push(it)})));
+const TASKS={};STATIONS.forEach(st=>(st.tasks||[]).forEach(t=>{t.st=st.id;TASKS[t.id]=t}));
+
+/* ---------- Zustand ---------- */
+const KEY='lp-potenz-neg-v1';
+let store={};try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+let S=null;
+function blank(code){return{code,start:Date.now(),view:'wdh',it:{},tk:{},self:0,merkOk:false,notes:''}}
+function save(){if(!S)return;S.last=Date.now();store.cur=S.code;store['s_'+S.code]=S;try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
+if(store.cur&&store['s_'+store.cur])S=store['s_'+store.cur];
+const it=id=>S.it[id]||(S.it[id]={});
+const tk=id=>S.tk[id]||(S.tk[id]={tries:0});
+
+function flow(){const f=['wdh','erarb','merk','basis','selbst'];if(S.self>1)f.push('foerder');f.push('chall','ende');return f}
+const ST=id=>STATIONS.find(s=>s.id===id);
+function stDone(id){const st=ST(id);if(id==='selbst')return S.self>0;if(id==='ende')return false;
+ if(id==='merk'&&!S.merkOk)return false;return(st.tasks||[]).every(t=>tk(t.id).done)}
+function unlocked(id){const f=flow();const i=f.indexOf(id);if(i<0)return false;return f.slice(0,i).every(stDone)}
+
+/* ---------- Ergebnis-Code ---------- */
+const bits2hex=b=>{let h='';for(let i=0;i<b.length;i+=4)h+=parseInt(b.slice(i,i+4).padEnd(4,'0'),2).toString(16);return h.toUpperCase()};
+const hex2bits=h=>[...h].map(c=>parseInt(c,16).toString(2).padStart(4,'0')).join('');
+function sum(s){let t=7;for(const c of s)t=(t*31+c.charCodeAt(0))%1296;return t.toString(36).toUpperCase().padStart(2,'0')}
+function resultCode(){const order=['wdh','erarb','merk','basis','selbst','foerder','chall'];let reached=0;
+ for(let i=0;i<order.length;i++){const id=order[i];if((id==='foerder'&&S.self<=1&&S.self>0)||stDone(id))reached=i+1;else break}
+ const ft=ITEMS.map(i=>it(i.id).ft===true?'1':'0').join(''),tr=ITEMS.map(i=>it(i.id).ft!==undefined?'1':'0').join('');
+ const ch=['c1','c2','c3'].map(t=>tk(t).done?tk(t).tries+1:0).join('-');
+ const min=Math.round(((S.last||Date.now())-S.start)/60000);
+ const body=['M9',S.code,reached,S.self,S.merkOk?1:0,min,bits2hex(ft),bits2hex(tr),ch,ITEMS.length].join('.');
+ return body+'.'+sum(body)}
+function decode(c){const p=c.trim().split('.');if(p.length!==11||p[0]!=='M9')return null;const body=p.slice(0,10).join('.');if(sum(body)!==p[10])return null;
+ const n=+p[9];return{code:p[1],reached:+p[2],self:+p[3],merk:+p[4],min:+p[5],ft:hex2bits(p[6]).slice(0,n),tr:hex2bits(p[7]).slice(0,n),ch:p[8].split('-').map(Number),n}}
+
+/* ---------- Rendering ---------- */
+const main=$('#main'),top=$('#top');
+function renderTop(){
+ if(!S||location.hash==='#lehrkraft'){top.innerHTML=`<div class="row"><span class="t">Potenzfunktionen · Klasse 9</span>${location.hash==='#lehrkraft'?'<button id="tb-back">Zum Lernpfad</button>':''}</div>`;const b=$('#tb-back');if(b)b.onclick=()=>{location.hash='';};return}
+ const f=flow();top.innerHTML=`<div class="row"><span class="t">${esc(ST(S.view).title)}</span><button id="tb-code">Zwischenstand</button></div><div class="dots">${f.map(id=>`<span class="${stDone(id)?'d':id===S.view?'c':''}"></span>`).join('')}</div>`;
+ $('#tb-code').onclick=()=>{S.view='ende';save();render(true)};
+}
+function render(scroll){renderTop();if(location.hash==='#lehrkraft')return renderTeacher();if(!S)return renderStart();
+ const st=ST(S.view);let h='';
+ if(st.special==='selbst')h=renderSelf();else if(st.special==='ende')h=renderEnd();else h=renderStation(st);
+ main.innerHTML=h+renderNav()+`<div class="foot"><a href="#lehrkraft">Bereich für Lehrkräfte</a></div>`;bind();if(scroll)window.scrollTo(0,0)}
+
+function renderStart(){main.innerHTML=`<div class="card hero"><div class="kicker">Digitaler Lernpfad · Mathe 9</div><h1>Potenzfunktionen mit negativen Exponenten</h1>
+<p>Du arbeitest Station für Station: <b>Wiederholung → Erarbeitung mit dem Taschenrechner → Merkkasten → Übungen → Knobel-Check</b>. Halte Heft und Taschenrechner bereit.</p>
+${plot({fns:[{f:P(-1)},{f:P(-2),c:COLS[1]}],h:220,yr:[-4,4],alt:'Vorschau Graphen'})}
+<label for="code"><b>Dein Code</b> (von deiner Lehrkraft)</label>
+<div class="acts"><input type="text" id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="z. B. K7F3X" style="width:160px;text-transform:uppercase;letter-spacing:.08em"><button class="btn" id="go">Los geht’s</button></div>
+<div class="fb" id="cfb"></div><p class="mute">Dein Fortschritt wird auf diesem Gerät gespeichert. Nutze immer dasselbe Handy und denselben Browser.</p></div><div class="foot"><a href="#lehrkraft">Bereich für Lehrkräfte</a></div>`;
+ const go=()=>{const c=$('#code').value.toUpperCase().replace(/[^A-Z0-9]/g,'');if(!validCode(c)){$('#cfb').className='fb no';$('#cfb').textContent='Dieser Code ist ungültig. Prüfe die Schreibweise (5 Zeichen, keine 0, O, 1, I oder L).';return}
+  S=store['s_'+c]||blank(c);save();render(true)};
+ $('#go').onclick=go;$('#code').onkeydown=e=>{if(e.key==='Enter')go()}}
+
+function renderStation(st){
+ if(!unlocked(st.id))return `<div class="card lock"><h2>${esc(st.title)}</h2><p>Diese Station ist noch gesperrt. Schließe zuerst die vorherigen Stationen ab.</p></div>`;
+ let h=`<div class="card hero"><div class="kicker">Station ${flow().indexOf(st.id)+1} · ${esc(st.sub)}</div><h2>${esc(st.title)}</h2><p>${st.intro}</p><div class="need">${st.need.map(n=>`<span>${n}</span>`).join('')}</div>${st.pre||''}</div>`;
+ if(st.merk){h+=MERK+`<div class="card"><label class="item" style="border:0"><input type="checkbox" id="merkok" ${S.merkOk?'checked':''} style="width:26px;height:26px"><span class="lbl"><b>Ich habe den Merkkasten vollständig mit Skizze in mein Heft übernommen.</b></span></label></div>`}
+ st.tasks.forEach((t,i)=>{h+=renderTask(t,i)});
+ if(st.after&&st.tasks.every(t=>tk(t.id).done))h+=st.after();
+ return h}
+function renderTask(t,i){const T=tk(t.id),done=T.done,ch=ST(t.st).challenge;
+ const lock=ST(t.st).merk&&!S.merkOk;
+ let h=`<div class="card task ${done?'done':''}" id="t-${t.id}"><div class="th"><span class="badge">${t.id.toUpperCase()}</span><h3>${t.title}</h3>${done?'<span class="mark ok">✓</span>':''}</div>${t.intro?`<div>${t.intro}</div>`:''}${t.fig?t.fig():''}`;
+ if(lock)return h+`<p class="mute">Erst den Merkkasten übernehmen und oben abhaken.</p></div>`;
+ t.items.forEach(x=>{h+=renderItem(x,done)});
+ const showHint=T.tries>=1||T.hintOpen, showSol=!ch?T.tries>=3:T.tries>=3;
+ if(!done)h+=`<div class="acts"><button class="btn" data-check="${t.id}">Prüfen</button>${t.hint?`<button class="btn w" data-hint="${t.id}">💡 Tipp</button>`:''}${t.sol&&showSol?`<button class="btn g" data-sol="${t.id}">${ch?'Lösungsweg zeigen':'Lösung zeigen'}</button>`:''}</div>`;
+ h+=`<div class="fb ${T.fbc||''}" id="fb-${t.id}">${T.fb||''}</div>`;
+ if(t.hint&&(T.hintOpen))h+=`<div class="box hint"><b class="h">Tipp</b>${t.hint}</div>`;
+ if(t.sol&&(T.solOpen||(done&&T.revealed)))h+=`<div class="box sol"><b class="h">${ch?'Lösungsweg':'Lösung'}</b>${t.sol}${ch&&!done?'<br><i>Übertrage den Lösungsweg ins Heft und gib dann das Ergebnis ein.</i>':''}</div>`;
+ if(done&&t.sol&&!T.revealed)h+=`<details class="box sol"><summary><b>Lösungsweg ansehen</b></summary>${t.sol}</details>`;
+ return h+`</div>`}
+function renderItem(x,done){const I=it(x.id),dis=done?'disabled':'';const mk=I.res===undefined?'':I.res?'<span class="mark ok">✓</span>':'<span class="mark no">✗</span>';
+ const cls=I.res===undefined?'':I.res?'ok':'no';
+ if(x.t==='notes')return `<div class="item"><span class="lbl">${x.l}</span><textarea id="notes" placeholder="Gemeinsamkeiten: …&#10;Unterschiede: …">${esc(S.notes||'')}</textarea></div>`;
+ if(x.t==='mc')return `<div class="item"><span class="lbl">${x.l}</span>${mk}<div class="chips">${x.opts.map((o,k)=>`<button class="chip ${I.v===k?'sel '+cls:''}" data-mc="${x.id}" data-k="${k}" ${dis}>${o}</button>`).join('')}</div>${I.msg?`<div class="msg">${esc(I.msg)}</div>`:''}</div>`;
+ const n=x.t==='set'?x.a.length:1,vals=I.v||[];const rs=I.rs||[];
+ let ins='';for(let k=0;k<n;k++)ins+=`<span class="inp">${n>1?`<span>x<sub>${k+1}</sub>=</span>`:''}<button class="pm" data-pm="${x.id}" data-k="${k}" ${dis} aria-label="Vorzeichen">±</button><input type="text" inputmode="decimal" autocomplete="off" data-in="${x.id}" data-k="${k}" value="${esc(vals[k]??'')}" class="${rs[k]===undefined?'':rs[k]?'ok':'no'}" ${dis}></span>`;
+ return `<div class="item"><span class="lbl">${x.l}</span><span style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">${ins}${mk}</span>${I.msg?`<div class="msg">${esc(I.msg)}</div>`:''}</div>`}
+
+function renderNav(){const f=flow(),i=f.indexOf(S.view);const nx=f[i+1],pv=f[i-1];
+ const canNext=nx&&stDone(S.view);let h='<div class="acts" style="margin-top:20px">';
+ if(pv)h+=`<button class="btn g" data-go="${pv}">← Zurück</button>`;
+ if(nx&&S.view!=='selbst')h+=`<button class="btn" style="flex:1" data-go="${nx}" ${canNext?'':'disabled'}>${canNext?'Weiter: '+esc(ST(nx).title)+' →':'Erst alle Aufgaben lösen'}</button>`;
+ return h+'</div>'}
+
+function stats(ids){const L=ITEMS.filter(i=>ids.includes(i.st));const ok=L.filter(i=>it(i.id).ft===true).length;return{ok,n:L.length,p:L.length?Math.round(ok/L.length*100):0}}
+function renderSelf(){if(!unlocked('selbst'))return renderStation(ST('selbst'));const b=stats(['basis']);
+ return `<div class="card hero"><div class="kicker">Zwischenstopp</div><h2>Wie sicher fühlst du dich?</h2><p>Bei den Übungen hast du <b>${b.ok} von ${b.n}</b> Teilaufgaben im ersten Versuch richtig gelöst (${b.p} %).</p>
+ <div class="bar"><i style="width:${b.p}%"></i></div><p>Schätze dich ehrlich ein. Davon hängt ab, wie es weitergeht:</p>
+ <div class="sel3">${[[1,'💪 Ich fühle mich sicher','→ direkt zum Knobel-Check'],[2,'🙂 Einigermaßen, aber nicht bei allem','→ erst kurzes Extra-Training'],[3,'🤔 Noch unsicher','→ erst Extra-Training mit Tipps']].map(([v,a,b])=>`<button class="chip ${S.self===v?'sel':''}" data-self="${v}"><b>${a}</b><br><span class="mute">${b}</span></button>`).join('')}</div>
+ ${S.self?`<div class="acts"><button class="btn big" data-go="${S.self===1?'chall':'foerder'}">Weiter →</button></div>`:''}</div>`}
+
+function renderEnd(){const fin=stDone('chall');const code=resultCode();const w=stats(['wdh']),b=stats(['basis']);
+ const chT=['c1','c2','c3'].map(t=>tk(t).done?tk(t).tries+1:'–');
+ return `<div class="card hero"><div class="kicker">${fin?'Lernpfad abgeschlossen':'Zwischenstand'}</div><h2>${fin?'Stark – du hast es geschafft! 🎉':'Dein Zwischenstand'}</h2>
+ <div class="stat"><div><b>${w.p} %</b><span>Wiederholung im 1. Versuch</span></div><div><b>${b.p} %</b><span>Übungen im 1. Versuch</span></div><div><b>${chT.join(' · ')}</b><span>Versuche Knobel-Check</span></div><div><b>${Math.round(((S.last||Date.now())-S.start)/60000)} min</b><span>Bearbeitungszeit</span></div></div>
+ <p><b>Dein Ergebnis-Code</b> – kopiere ihn und schicke ihn deiner Lehrkraft (z. B. über IServ, Moodle oder Teams):</p>
+ <div class="code small" id="rc">${esc(code)}</div><div class="acts"><button class="btn" id="copy">Code kopieren</button></div><div class="fb" id="cpfb"></div>
+ <p class="mute">Dein Code: <b>${esc(S.code)}</b>. Der Ergebnis-Code enthält keinen Namen, nur deinen Lernstand.</p></div>
+ ${fin?`<div class="card"><h3>Zum Schluss</h3><p>Lies deinen Merkkasten noch einmal und markiere die Begriffe <b>Asymptote</b> und <b>Polstelle</b>. Erkläre sie in einem Satz jemandem neben dir.</p></div>`:''}
+ <div class="acts"><button class="btn g" data-go="${fin?'wdh':firstOpen()}">${fin?'Stationen ansehen':'Zurück zum Lernpfad'}</button></div>`}
+function firstOpen(){return flow().find(id=>!stDone(id))||'wdh'}
+
+/* ---------- Prüfen ---------- */
+function checkItem(x){const I=it(x.id);I.msg='';
+ if(x.t==='mc'){if(I.v===undefined)return null;return I.v===x.c}
+ if(x.t==='num'){const v=parseNum((I.v||[])[0]);if(isNaN(v))return null;const ok=near(v,x.a,x.tol);I.rs=[ok];
+  if(!ok&&x.w)for(const [wv,m] of x.w)if(near(v,wv,x.tol)){I.msg=m;break}
+  if(!ok&&!I.msg&&near(v,-x.a,x.tol)&&x.a!==0)I.msg='Prüfe das Vorzeichen!';return ok}
+ if(x.t==='set'){const vs=(I.v||[]).slice(0,x.a.length).map(parseNum);if(vs.length<x.a.length||vs.some(isNaN))return null;
+  const used=[];I.rs=vs.map(v=>{const j=x.a.findIndex((a,k)=>!used.includes(k)&&near(v,a,x.tol));if(j>=0){used.push(j);return true}return false});
+  const ok=I.rs.every(Boolean);if(!ok){if(vs.length===2&&near(vs[0],vs[1],x.tol))I.msg='Du hast zweimal dieselbe Zahl. Denk an die negative Lösung!';else if(vs.every(v=>v>0)||vs.every(v=>v<0))I.msg='Bei geraden Hochzahlen gibt es eine positive und eine negative Lösung.'}return ok}
+ return true}
+function doCheck(tid){const t=TASKS[tid],T=tk(tid);const L=t.items.filter(x=>x.t!=='notes');
+ const res=L.map(checkItem);
+ if(res.some(r=>r===null)){T.fbc='no';T.fb='Bitte fülle zuerst alle Felder aus bzw. wähle überall eine Antwort.';L.forEach((x,k)=>{if(res[k]!==null)it(x.id).res=res[k]});save();rerenderTask(tid);return}
+ L.forEach((x,k)=>{const I=it(x.id);I.res=res[k];if(I.ft===undefined)I.ft=res[k]});
+ const wrong=res.filter(r=>!r).length;
+ if(!wrong){T.done=true;T.fbc='ok';T.fb=T.tries===0?'Super, alles richtig! ✓':'Richtig! Gut drangeblieben. ✓';T.hintOpen=false;T.solOpen=false}
+ else{T.tries++;T.fbc='no';const ch=ST(t.st).challenge;
+  T.fb=`${wrong===1?'Eine Antwort ist':wrong+' Antworten sind'} noch nicht richtig (rot markiert). `+(T.tries===1?'Lies die Hinweise und versuch es nochmal.':T.tries===2?'Schau dir den Tipp an – er hilft dir weiter.':ch?'Du kannst dir jetzt den Lösungsweg ansehen. Übertrage ihn ins Heft und gib dann das Ergebnis ein.':'Du kannst dir jetzt die Lösung anzeigen lassen. Vergleiche sie mit deiner Rechnung im Heft!');
+  if(T.tries>=2&&t.hint)T.hintOpen=true}
+ save();
+ const st=ST(t.st);if(T.done&&st.tasks.every(x=>tk(x.id).done))render();else rerenderTask(tid)}
+function reveal(tid){const t=TASKS[tid],T=tk(tid);T.solOpen=true;
+ if(!ST(t.st).challenge){t.items.forEach(x=>{const I=it(x.id);if(x.t==='mc')I.v=x.c;else if(x.t==='num')I.v=[String(x.a===Math.round(x.a*1e4)/1e4?x.a:x.a.toFixed(2)).replace('.',',')];else if(x.t==='set')I.v=x.a.map(a=>String(Math.round(a*100)/100).replace('.',','));I.res=true;I.rs=I.v&&x.t!=='mc'?I.v.map(()=>true):undefined;I.msg='';if(I.ft===undefined)I.ft=false});
+  T.done=true;T.revealed=true;T.fbc='';T.fb='Lösung eingeblendet. Vergleiche Schritt für Schritt mit deinem Heft und korrigiere dort in einer anderen Farbe.'}
+ save();const st=ST(t.st);if(T.done&&st.tasks.every(x=>tk(x.id).done))render();else rerenderTask(tid)}
+function rerenderTask(tid){const t=TASKS[tid];const el=$('#t-'+tid);const st=ST(t.st);const i=st.tasks.indexOf(t);
+ const tmp=document.createElement('div');tmp.innerHTML=renderTask(t,i);el.replaceWith(tmp.firstElementChild);bind();renderTop()}
+
+/* ---------- Events ---------- */
+function bind(){
+ main.querySelectorAll('[data-in]').forEach(el=>el.oninput=()=>{const I=it(el.dataset.in);I.v=I.v||[];I.v[+el.dataset.k]=el.value;el.className='';save()});
+ main.querySelectorAll('[data-pm]').forEach(b=>b.onclick=()=>{const inp=main.querySelector(`[data-in="${b.dataset.pm}"][data-k="${b.dataset.k}"]`);let v=inp.value.trim();v=v.startsWith('-')||v.startsWith('−')?v.slice(1):'-'+v;inp.value=v;inp.dispatchEvent(new Event('input'));inp.focus()});
+ main.querySelectorAll('[data-mc]').forEach(b=>b.onclick=()=>{const I=it(b.dataset.mc);I.v=+b.dataset.k;I.res=undefined;I.msg='';save();
+  b.parentElement.querySelectorAll('.chip').forEach(c=>c.className='chip'+(c===b?' sel':''));b.closest('.item').querySelector('.mark')?.remove();b.closest('.item').querySelector('.msg')?.remove()});
+ main.querySelectorAll('[data-check]').forEach(b=>b.onclick=()=>doCheck(b.dataset.check));
+ main.querySelectorAll('[data-hint]').forEach(b=>b.onclick=()=>{const T=tk(b.dataset.hint);T.hintOpen=!T.hintOpen;save();rerenderTask(b.dataset.hint)});
+ main.querySelectorAll('[data-sol]').forEach(b=>b.onclick=()=>reveal(b.dataset.sol));
+ main.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{S.view=b.dataset.go;save();render(true)});
+ main.querySelectorAll('[data-self]').forEach(b=>b.onclick=()=>{S.self=+b.dataset.self;save();render()});
+ const n=$('#notes');if(n)n.oninput=()=>{S.notes=n.value;save()};
+ const m=$('#merkok');if(m)m.onchange=()=>{S.merkOk=m.checked;save();render()};
+ const cp=$('#copy');if(cp)cp.onclick=async()=>{const f=$('#cpfb');try{await navigator.clipboard.writeText($('#rc').textContent);f.className='fb ok';f.textContent='Kopiert! Füge ihn jetzt dort ein, wo deine Lehrkraft ihn haben möchte.'}catch(e){f.className='fb no';f.textContent='Kopieren nicht möglich – tippe lange auf den Code und wähle „Kopieren“.'}};
+}
+
+/* ---------- Lehrkraft ---------- */
+function renderTeacher(){
+ main.innerHTML=`<div class="card hero"><div class="kicker">Für Lehrkräfte</div><h2>Codes &amp; Auswertung</h2><p>So funktioniert es: Codes erzeugen und austeilen (z. B. Liste ausdrucken und Namen notieren) → SuS geben den Code beim Start ein → am Ende (oder zwischendurch über „Zwischenstand“) schicken sie Ihnen ihren Ergebnis-Code → hier einfügen.</p></div>
+ <div class="card"><h3>1 · Schüler-Codes erzeugen</h3><div class="acts"><input type="text" id="cn" inputmode="numeric" value="30" style="width:80px"><button class="btn" id="gen">Erzeugen</button><button class="btn g" id="cpc" hidden>Liste kopieren</button></div><div id="codes"></div></div>
+ <div class="card"><h3>2 · Ergebnis-Codes auswerten</h3><p class="mute">Alle Ergebnis-Codes einfügen – beliebig getrennt (Zeilen, Leerzeichen, auch mit Text drumherum). Pro Schüler-Code zählt der neueste Stand.</p>
+ <textarea id="rin" placeholder="M9.K7F3X.…"></textarea><div class="acts"><button class="btn" id="ana">Auswerten</button></div><div id="out"></div></div>`;
+ $('#gen').onclick=()=>{const n=Math.max(1,Math.min(60,parseInt($('#cn').value)||30));const set=new Set();while(set.size<n)set.add(newCode());const L=[...set];
+  $('#codes').innerHTML=`<div class="scroll"><table><tr><th>Nr.</th><th>Code</th><th>Name (notieren)</th></tr>${L.map((c,i)=>`<tr><td>${i+1}</td><td><b style="letter-spacing:.08em">${c}</b></td><td></td></tr>`).join('')}</table></div><p class="mute">Codes sind nicht gespeichert – kopieren Sie die Liste und notieren Sie, wer welchen Code hat.</p>`;
+  const b=$('#cpc');b.hidden=false;b.onclick=async()=>{try{await navigator.clipboard.writeText(L.map((c,i)=>`${i+1}\t${c}`).join('\n'));b.textContent='Kopiert ✓'}catch(e){b.textContent='Bitte manuell markieren'}}};
+ $('#ana').onclick=()=>{const raw=$('#rin').value.match(/M9\.[A-Z0-9.\-]+/g)||[];const by={};let bad=0;
+  raw.forEach(r=>{const d=decode(r);if(!d||d.n!==ITEMS.length){bad++;return}const o=by[d.code];if(!o||d.reached>o.reached||(d.reached===o.reached&&d.min>=o.min))by[d.code]=d});
+  const L=Object.values(by).sort((a,b)=>a.code.localeCompare(b.code));
+  if(!L.length){$('#out').innerHTML=`<div class="fb no">Keine gültigen Codes gefunden${bad?` (${bad} ungültig/beschädigt)`:''}.</div>`;return}
+  const names=['Start','Wdh. ✓','Erarb. ✓','Merk ✓','Übung ✓','Selbst ✓','vor Knobel','fertig ✓'];const selfN=['–','sicher','teils','unsicher'];
+  const pct=(d,st)=>{let ok=0,n=0;ITEMS.forEach((x,i)=>{if(x.st===st&&d.tr[i]==='1'){n++;if(d.ft[i]==='1')ok++}});return n?Math.round(ok/n*100):null};
+  const pill=p=>p===null?'–':`<span class="pill ${p>=75?'p1':p>=50?'p2':'p3'}">${p} %</span>`;
+  let h=`<p><b>${L.length}</b> Schüler:innen · <b>${L.filter(d=>d.reached>=7).length}</b> fertig${bad?` · ${bad} ungültige Codes ignoriert`:''}</p>
+  <div class="scroll"><table class="stack"><thead><tr><th>Code</th><th>Station</th><th>Wdh.</th><th>Erarb.</th><th>Übung</th><th>Selbst</th><th>Knobel-Versuche</th><th>Zeit</th></tr></thead><tbody>
+  ${L.map(d=>`<tr><td><b>${esc(d.code)}</b></td><td>${names[d.reached]||d.reached}</td><td>${pill(pct(d,'wdh'))}</td><td>${pill(pct(d,'erarb'))}</td><td>${pill(pct(d,'basis'))}</td><td>${selfN[d.self]||'–'}</td><td>${d.ch.map(c=>c||'–').join(' · ')}</td><td>${d.min} min</td></tr>`).join('')}</tbody></table></div>
+  <h3 style="margin-top:18px">Wo hakt es? (richtig im 1. Versuch)</h3><p class="mute">Nur bearbeitete Teilaufgaben zählen. Schwierigste zuerst.</p>`;
+  const rows=ITEMS.map((x,i)=>{let n=0,ok=0;L.forEach(d=>{if(d.tr[i]==='1'){n++;if(d.ft[i]==='1')ok++}});return{x,n,p:n?Math.round(ok/n*100):null}}).filter(r=>r.n).sort((a,b)=>a.p-b.p);
+  h+=`<div class="scroll"><table class="heat"><tr><th>Aufgabe</th><th>Teilaufgabe</th><th>n</th><th>Quote</th></tr>${rows.map(r=>`<tr><td>${r.x.task.toUpperCase()}</td><td>${esc(r.x.k||r.x.id)}</td><td class="n">${r.n}</td><td class="n">${pill(r.p)}</td></tr>`).join('')}</table></div>`;
+  $('#out').innerHTML=h};
+}
+window.addEventListener('hashchange',()=>render(true));
+render();
+}
+</script>
+</body>
+</html>
